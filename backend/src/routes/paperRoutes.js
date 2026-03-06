@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadPaper } from "../controllers/paperController.js";
+import { uploadPaper, getCitations, getPaper, reprocessPaper, getPapers } from "../controllers/paperController.js";
 import { protect} from "../middleware/authMiddleware.js";
 import { uploadPDF } from "../middleware/uploadMiddleware.js";
 
@@ -11,5 +11,10 @@ router.post(
   uploadPDF.single("pdf"),
   uploadPaper
 );
+
+router.get('/', protect, getPapers);
+router.post('/:id/reprocess', protect, reprocessPaper);
+router.get('/:id', protect, getPaper);
+router.get('/:id/citations', protect, getCitations);
 
 export default router;

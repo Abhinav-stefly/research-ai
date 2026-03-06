@@ -6,7 +6,8 @@ export function protect(req, res, next) {
   if (!token) return res.status(401).json({ message: "No token" });
 
   try {
-    req.user = jwt.verify(token, ENV.JWT_SECRET);
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    req.user = { _id: decoded.id };
     next();
   } catch {
     res.status(401).json({ message: "Invalid token" });

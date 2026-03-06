@@ -8,9 +8,11 @@ const paperSchema = new mongoose.Schema(
   rawText: String,
   cleanedText: String,
   sections: Object,
-  citations: Array
+  summaries: Object,
+  citations: Array,
+  embeddings: [Number]
 },
 { timestamps: true }
 );
 
-export default mongoose.model("Paper", paperSchema);
+export default mongoose.models.Paper || mongoose.model("Paper", paperSchema);

@@ -5,7 +5,7 @@ import { ENV } from "./config/env.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import paperRoutes from "./routes/paperRoutes.js";
-//import aiRoutes from "./routes/aiRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 const { PORT } = ENV;
 const app = express();
@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/papers", paperRoutes);
-//app.use("/api/ai", aiRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(errorHandler);
 
