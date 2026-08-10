@@ -18,9 +18,9 @@ export default class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center p-6">
-          <div className="card text-center">
-            <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
-            <p className="text-sm text-gray-600 mb-4">{this.state.error?.message || 'Unexpected error'}</p>
+          <div className="card text-center max-w-md">
+            <h2 className="page-title mb-2">Something went wrong</h2>
+            <p className="text-[var(--text-muted)] text-sm mb-4">{this.state.error?.message || 'Unexpected error'}</p>
             <button onClick={() => window.location.reload()} className="btn-primary">Reload</button>
           </div>
         </div>

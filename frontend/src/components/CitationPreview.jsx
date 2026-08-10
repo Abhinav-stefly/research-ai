@@ -35,7 +35,7 @@ export default function CitationPreview({ paperId, raw }) {
       <span
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
-        className="text-blue-600 underline cursor-help"
+        className="text-[var(--accent)] underline cursor-help"
       >
         {raw}
       </span>
@@ -43,11 +43,11 @@ export default function CitationPreview({ paperId, raw }) {
         <div className="absolute z-50 mt-8 left-0 w-80 card text-left">
           {entry ? (
             <div>
-              <div className="text-sm text-gray-600 mb-2">Reference #{entry.index}</div>
-              <div className="text-sm text-gray-800">{entry.raw}</div>
+              <div className="text-sm text-[var(--text-muted)] mb-2">Reference #{entry.index}</div>
+              <div className="text-sm text-[var(--text-primary)]">{entry.raw}</div>
             </div>
           ) : (
-            <div className="text-sm text-gray-600">No preview available</div>
+            <div className="text-sm text-[var(--text-muted)]">No preview available</div>
           )}
         </div>
       )}

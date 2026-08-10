@@ -37,12 +37,15 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="card max-w-md w-full">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">Research AI</h1>
-        <h2 className="text-2xl font-bold mb-6">Register</h2>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="card max-w-[420px] w-full p-10">
+        <div className="flex flex-col items-center mb-6">
+          <span className="text-[var(--accent)] font-bold text-2xl">ResearchAI</span>
+          <span className="w-2 h-2 bg-[var(--accent)] rounded-full mt-1" />
+        </div>
+        <h2 className="page-title mb-6 text-center">Register</h2>
         
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
+        {error && <div className="bg-red-600 text-white p-3 rounded-lg mb-4">{error}</div>}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -93,9 +96,9 @@ export default function Register() {
           </button>
         </form>
         
-        <p className="mt-4 text-center text-gray-600">
+        <p className="mt-4 text-center text-[var(--text-muted)]">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-[var(--accent)] hover:underline">
             Login
           </Link>
         </p>

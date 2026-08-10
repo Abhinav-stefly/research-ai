@@ -43,10 +43,10 @@ export default function MathTab({ paperId, level, token }) {
         <div className="space-y-4">
           {explanations.map((item, i) => (
             <div key={i} className="card">
-              <h4 className="font-mono bg-gray-100 p-2 rounded mb-3 break-all">
+              <h4 className="font-mono bg-[rgba(255,255,255,0.03)] p-2 rounded mb-3 break-all">
                 {item.expression}
               </h4>
-              <p className="text-gray-700">{item.explanation}</p>
+              <p className="text-[var(--text-secondary)]">{item.explanation}</p>
             </div>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken } from '../utils';
+import { getToken, formatDate } from '../utils';
 import { paperAPI } from '../api';
 
 export default function Dashboard() {
@@ -11,7 +11,6 @@ export default function Dashboard() {
   const token = getToken();
   const navigate = useNavigate();
 
-  // Fetch existing papers on component mount
   useEffect(() => {
     const fetchPapers = async () => {
       try {
@@ -19,22 +18,16 @@ export default function Dashboard() {
         setPapers(res.data.papers || []);
       } catch (err) {
         console.error('Failed to fetch papers:', err);
-        // Don't show error for initial load
       }
     };
-
-    if (token) {
-      fetchPapers();
-    }
+    if (token) fetchPapers();
   }, [token]);
 
   const handleFileSelect = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setLoading(true);
     setError('');
-
     try {
       const res = await paperAPI.upload(file, token);
       setPapers([res.data.paper, ...papers]);
@@ -48,34 +41,30 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">Research AI</h1>
-          <button
-            onClick={() => {
-              localStorage.removeItem('token');
-              navigate('/login');
-            }}
-            className="btn-secondary"
-          >
-            Logout
-          </button>
+    <div className="min-h-screen">
+      <div className="container">
+        {/* Header */}
+        <div className="mb-4">
+          <h1 className="page-title">Your Research Library</h1>
+          <p className="text-[var(--text-muted)]">Manage your collection of papers</p>
         </div>
-      </nav>
+        {/* Dashboard nav */}
+        <nav className="mb-8">
+          <ul className="flex space-x-4 text-[var(--accent)]">
+            <li className="cursor-pointer hover:underline">Upload</li>
+            <li className="cursor-pointer hover:underline">Your Papers</li>
+          </ul>
+        </nav>
 
-      <div className="max-w-6xl mx-auto p-6">
         {/* Upload Section */}
         <div className="card mb-8">
-          <h2 className="text-2xl font-bold mb-4">Upload Paper</h2>
-          
-          {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">{error}</div>}
-          
+          <h2 className="section-header mb-4">Upload Paper</h2>
+          {error && <div className="bg-red-600 text-white p-3 rounded-lg mb-4">{error}</div>}
           <div
             onClick={() => fileInput.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
+            className="border-2 border-dashed border-[rgba(59,130,246,0.3)] rounded-lg p-8 text-center cursor-pointer hover:border-[var(--accent)] hover:bg-[rgba(59,130,246,0.1)] transition-colors"
           >
-            <p className="text-gray-600 mb-2">Click to select a PDF file</p>
+            <p className="text-[var(--text-muted)] mb-2">Click to select a PDF file</p>
             <input
               ref={fileInput}
               type="file"
@@ -84,32 +73,34 @@ export default function Dashboard() {
               hidden
               disabled={loading}
             />
-            {loading && <p className="text-blue-600 font-medium">Uploading...</p>}
+            {loading && <p className="text-[var(--accent)] font-medium">Uploading...</p>}
           </div>
         </div>
 
         {/* Papers List */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">Your Papers</h2>
+          <h2 className="section-header mb-4">Your Papers</h2>
           {papers.length === 0 ? (
-            <div className="card text-center text-gray-500">
-              <p>No papers uploaded yet</p>
+            <div className="card text-center text-[var(--text-muted)]">
+              <svg className="mx-auto mb-4 w-12 h-12 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-6m3 6V9m3 8V5" /></svg>
+              <p>Upload your first paper to get started</p>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-4">
               {papers.map(paper => (
                 <div
                   key={paper._id}
                   onClick={() => navigate(`/paper/${paper._id}`)}
-                  className="card cursor-pointer hover:shadow-lg"
+                  className="card flex justify-between items-center cursor-pointer"
                 >
-                  <h3 className="font-bold text-lg mb-2 line-clamp-2">{paper.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {new Date(paper.createdAt).toLocaleDateString()}
-                  </p>
-                  <div className="space-y-1 text-sm text-gray-600">
-                    <p>Sections: {paper.sectionCount || 0}</p>
-                    <p>Citations: {paper.citationCount || 0}</p>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg line-clamp-2">{paper.title}</h3>
+                  </div>
+                  <div className="flex items-center space-x-2 text-xs font-mono text-[var(--text-muted)]">
+                    <span>{formatDate(paper.createdAt)}</span>
+                    <span>{paper.sections ? Object.keys(paper.sections).length : 0} sections</span>
+                    <span>{paper.citations ? paper.citations.length : 0} cites</span>
+                    <span className="text-[var(--accent)]">→</span>
                   </div>
                 </div>
               ))}

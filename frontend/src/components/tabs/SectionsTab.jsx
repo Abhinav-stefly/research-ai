@@ -10,11 +10,11 @@ const SECTION_META = {
 };
 
 const COLORS = {
-  blue:    { ring: 'ring-blue-400',    badge: 'bg-blue-100 text-blue-700',       dot: 'bg-blue-400'    },
-  indigo:  { ring: 'ring-indigo-400',  badge: 'bg-indigo-100 text-indigo-700',   dot: 'bg-indigo-400'  },
-  violet:  { ring: 'ring-violet-400',  badge: 'bg-violet-100 text-violet-700',   dot: 'bg-violet-400'  },
-  emerald: { ring: 'ring-emerald-400', badge: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-400' },
-  amber:   { ring: 'ring-amber-400',   badge: 'bg-amber-100 text-amber-700',     dot: 'bg-amber-400'   },
+  blue:    { ring: 'ring-blue-400',    badge: 'bg-blue-100 text-blue-700',       dot: 'bg-blue-400', lborder: 'border-blue-400'    },
+  indigo:  { ring: 'ring-indigo-400',  badge: 'bg-indigo-100 text-indigo-700',   dot: 'bg-indigo-400', lborder: 'border-indigo-400'  },
+  violet:  { ring: 'ring-violet-400',  badge: 'bg-violet-100 text-violet-700',   dot: 'bg-violet-400', lborder: 'border-violet-400'  },
+  emerald: { ring: 'ring-emerald-400', badge: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-400', lborder: 'border-emerald-400' },
+  amber:   { ring: 'ring-amber-400',   badge: 'bg-amber-100 text-amber-700',     dot: 'bg-amber-400', lborder: 'border-amber-400'   },
 };
 
 function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, explaining, explanation }) {
@@ -31,9 +31,9 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
   return (
     <div
       id={`section-${sectionKey}`}
-      className={`rounded-2xl border bg-white shadow-sm transition-all duration-200 overflow-hidden
-        ${isHighlighted ? `ring-2 ${colors.ring} border-transparent` : 'border-gray-100'}
-        ${!hasContent ? 'opacity-60' : 'hover:shadow-md'}`}
+      className={`rounded-[var(--radius-card)] bg-[var(--surface)] border-l-4 ${colors.lborder} transition-all duration-200 overflow-hidden
+        ${!hasContent ? 'opacity-60' : 'hover:shadow-md'}
+        ${isHighlighted ? `ring-2 ${colors.ring} border-transparent` : ''}`}
     >
       {/* Header */}
       <button
@@ -46,26 +46,26 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
           <span className="text-xl shrink-0">{meta.icon}</span>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-gray-900 text-base">{meta.label}</span>
+              <span className="font-semibold text-[var(--text-primary)] text-base">{meta.label}</span>
               {hasContent ? (
                 <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors.badge}`}>
                   {wordCount.toLocaleString()} words
                 </span>
               ) : (
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">
+                <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] text-[var(--text-muted)]">
                   Not detected
                 </span>
               )}
             </div>
             {hasContent && !open && (
-              <p className="text-sm text-gray-400 mt-0.5 truncate max-w-lg">
+              <p className="text-sm text-[var(--text-muted)] mt-0.5 truncate max-w-lg">
                 {content.trim().slice(0, 160)}…
               </p>
             )}
           </div>
         </div>
         {hasContent && (
-          <span className={`text-gray-400 shrink-0 transition-transform duration-200 text-sm ${open ? 'rotate-180' : ''}`}>
+              <span className={`text-[var(--text-muted)] shrink-0 transition-transform duration-200 text-sm ${open ? 'rotate-180' : ''}`}>
             ▾
           </span>
         )}
@@ -73,19 +73,19 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
 
       {/* Body */}
       {open && hasContent && (
-        <div className="px-5 pb-5 space-y-4 border-t border-gray-50">
-          <div className="mt-4 bg-gray-50 rounded-xl p-4 max-h-80 overflow-y-auto">
-            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
+        <div className="px-5 pb-5 space-y-4 border-t border-[rgba(255,255,255,0.08)]">
+          <div className="mt-4 bg-[var(--surface)] rounded-xl p-4 max-h-80 overflow-y-auto">
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap break-words">
               {content}
             </p>
           </div>
 
           {explanation && (
-            <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
-              <p className="text-xs font-semibold text-blue-500 uppercase tracking-wider mb-2">
+            <div className="rounded-xl border border-[rgba(59,130,246,0.2)] bg-[rgba(59,130,246,0.05)] p-4">
+              <p className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider mb-2">
                 {level === 'eli5' ? '🧒 Simple Explanation' : '🎓 Detailed Explanation'}
               </p>
-              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">
                 {explanation}
               </p>
             </div>
@@ -96,7 +96,7 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
               type="button"
               onClick={() => onExplain(sectionKey, content)}
               disabled={explaining === sectionKey}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="btn-primary px-4 py-2 text-sm disabled:opacity-50"
             >
               {explaining === sectionKey
                 ? '✨ Explaining…'
@@ -107,7 +107,7 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
             <button
               type="button"
               onClick={() => navigator.clipboard?.writeText(content)}
-              className="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 rounded-lg border border-[rgba(255,255,255,0.12)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors"
             >
               📋 Copy
             </button>
@@ -116,7 +116,7 @@ function SectionCard({ sectionKey, meta, content, highlight, level, onExplain, e
       )}
 
       {!hasContent && (
-        <p className="px-5 pb-4 text-sm text-gray-400">
+        <p className="px-5 pb-4 text-sm text-[var(--text-muted)]">
           Could not be automatically detected in this paper.
         </p>
       )}
@@ -211,16 +211,16 @@ export default function SectionsTab({ paperId, level, token, highlight, refreshT
     return (
       <div className="space-y-3">
         {Object.keys(SECTION_META).map(key => (
-          <div key={key} className="rounded-2xl border border-gray-100 bg-white p-5 animate-pulse">
+          <div key={key} className="rounded-[var(--radius-card)] bg-[var(--surface)] p-5 animate-pulse">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-gray-200" />
-              <div className="h-4 w-28 rounded bg-gray-200" />
-              <div className="h-4 w-16 rounded-full bg-gray-100 ml-1" />
+              <div className="w-7 h-7 rounded-lg bg-[rgba(255,255,255,0.08)]" />
+              <div className="h-4 w-28 rounded bg-[rgba(255,255,255,0.08)]" />
+              <div className="h-4 w-16 rounded-full bg-[rgba(255,255,255,0.08)] ml-1" />
             </div>
             <div className="space-y-2">
-              <div className="h-3 rounded bg-gray-100 w-full" />
-              <div className="h-3 rounded bg-gray-100 w-5/6" />
-              <div className="h-3 rounded bg-gray-100 w-3/4" />
+              <div className="h-3 rounded bg-[rgba(255,255,255,0.08)] w-full" />
+              <div className="h-3 rounded bg-[rgba(255,255,255,0.08)] w-5/6" />
+              <div className="h-3 rounded bg-[rgba(255,255,255,0.08)] w-3/4" />
             </div>
           </div>
         ))}
@@ -255,8 +255,8 @@ export default function SectionsTab({ paperId, level, token, highlight, refreshT
 
       {/* Stats bar */}
       <div className="flex items-center justify-between px-1">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span className="font-semibold text-gray-700">{filledCount}</span>
+        <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+          <span className="font-semibold text-[var(--text-primary)]">{filledCount}</span>
           <span>of {Object.keys(SECTION_META).length} sections detected</span>
           <div className="flex gap-1 ml-1">
             {Object.entries(SECTION_META).map(([key, meta]) => {
@@ -264,7 +264,7 @@ export default function SectionsTab({ paperId, level, token, highlight, refreshT
               const filled = !!(safeSections[key]?.trim());
               return (
                 <div key={key} title={meta.label}
-                  className={`w-2 h-2 rounded-full ${filled ? colors.dot : 'bg-gray-200'}`}
+                  className={`w-2 h-2 rounded-full ${filled ? colors.dot : 'bg-[rgba(255,255,255,0.3)]'}`}
                 />
               );
             })}
@@ -275,7 +275,7 @@ export default function SectionsTab({ paperId, level, token, highlight, refreshT
           type="button"
           onClick={handleReprocess}
           disabled={reprocessing}
-          className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium transition-colors disabled:opacity-50"
+          className="text-xs px-3 py-1.5 rounded-lg bg-[rgba(255,255,255,0.03)] text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.06)] font-medium transition-colors disabled:opacity-50"
         >
           {reprocessing ? '⏳ Reprocessing…' : '🔄 Retry Detection'}
         </button>
@@ -298,17 +298,17 @@ export default function SectionsTab({ paperId, level, token, highlight, refreshT
 
       {/* Global empty state */}
       {filledCount === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-gray-200 p-10 text-center">
+        <div className="rounded-[var(--radius-card)] border-2 border-dashed border-[rgba(255,255,255,0.08)] p-10 text-center bg-[var(--surface)]">
           <p className="text-4xl mb-3">🔬</p>
-          <p className="font-semibold text-gray-700 mb-1">No sections detected</p>
-          <p className="text-sm text-gray-400 mb-5">
+          <p className="font-semibold text-[var(--text-primary)] mb-1">No sections detected</p>
+          <p className="text-sm text-[var(--text-muted)] mb-5">
             The paper may use unconventional heading formats. Try reprocessing.
           </p>
           <button
             type="button"
             onClick={handleReprocess}
             disabled={reprocessing}
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="btn-primary px-5 py-2 text-sm disabled:opacity-50"
           >
             {reprocessing ? '⏳ Reprocessing…' : '🔄 Retry Section Detection'}
           </button>

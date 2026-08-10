@@ -22,29 +22,31 @@ export default function ExplainTab({ paperId, level, token }) {
 
   return (
     <div className="space-y-4">
-      <div className="card">
-        <label className="block text-sm font-medium mb-2">Text to Explain</label>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="input min-h-32"
-          placeholder="Paste or type the text you want explained..."
-        />
-        <button
-          onClick={handleExplain}
-          className="btn-primary mt-4"
-          disabled={loading || !text.trim()}
-        >
-          {loading ? 'Explaining...' : `Explain (${level === 'eli5' ? 'Simple' : 'Advanced'})`}
-        </button>
-      </div>
-
-      {explanation && (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="card">
-          <h3 className="font-bold text-lg mb-3">Explanation</h3>
-          <p className="text-gray-700 whitespace-pre-wrap">{explanation}</p>
+          <label className="block text-sm font-medium mb-2">Text to Explain</label>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="input min-h-32"
+            placeholder="Paste or type the text you want explained..."
+          />
+          <button
+            onClick={handleExplain}
+            className="btn-primary mt-4"
+            disabled={loading || !text.trim()}
+          >
+            {loading ? 'Explaining...' : `Explain (${level === 'eli5' ? 'Simple' : 'Advanced'})`}
+          </button>
         </div>
-      )}
+
+        {explanation && (
+          <div className="card bg-[rgba(59,130,246,0.05)]">
+            <h3 className="font-bold text-lg mb-3">Explanation</h3>
+            <p className="text-[var(--text-secondary)] whitespace-pre-wrap">{explanation}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

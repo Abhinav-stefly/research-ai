@@ -1,20 +1,34 @@
 import { useState, useEffect, useRef } from 'react';
 import { paperAPI } from '../api';
+import { getToken } from '../utils';
 
 export default function CitationGraph({ paperId, token }) {
-  const [graph, setGraph] = useState(null);
+  const [graph, setGraph] = useState({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    if (!paperId) {
+      setGraph({ nodes: [], edges: [] });
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
     const fetchGraph = async () => {
       try {
-        const res = await paperAPI.getCitations(paperId, token);
+        const authToken = token || getToken();
+        const res = await paperAPI.getCitations(paperId, authToken);
         if (!mounted) return;
-        setGraph(res.data.graph);
+
+        const graphData = res?.data?.graph || { nodes: [], edges: [] };
+        setGraph({
+          nodes: Array.isArray(graphData.nodes) ? graphData.nodes : [],
+          edges: Array.isArray(graphData.edges) ? graphData.edges : []
+        });
       } catch (err) {
         console.warn('Failed to fetch citation graph', err.message);
+        if (mounted) setGraph({ nodes: [], edges: [] });
       } finally {
         if (mounted) setLoading(false);
       }
@@ -25,14 +39,14 @@ export default function CitationGraph({ paperId, token }) {
   }, [paperId, token]);
 
   useEffect(() => {
-    if (!graph || !canvasRef.current) return;
+    if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
 
-    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
@@ -43,7 +57,6 @@ export default function CitationGraph({ paperId, token }) {
       return;
     }
 
-    // Simple force-directed layout
     const nodes = graph.nodes.map((n, i) => ({
       ...n,
       x: (i % 3) * (width / 3) + 50,
@@ -54,7 +67,6 @@ export default function CitationGraph({ paperId, token }) {
 
     const edges = graph.edges || [];
 
-    // Draw edges
     ctx.strokeStyle = '#ccc';
     ctx.lineWidth = 1;
     edges.forEach(edge => {
@@ -68,36 +80,34 @@ export default function CitationGraph({ paperId, token }) {
       }
     });
 
-    // Draw nodes
     nodes.forEach(node => {
       const radius = 20;
-      ctx.fillStyle = node.id.startsWith('paper') ? '#3b82f6' : '#10b981';
+      ctx.fillStyle = node.id?.startsWith('paper') ? '#3b82f6' : '#10b981';
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Draw label
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 11px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      const label = node.id.startsWith('paper') ? 'Paper' : node.label.slice(0, 10) + '...';
+      const label = node.id?.startsWith('paper') ? 'Paper' : (node.label || 'Ref').slice(0, 10) + '...';
       ctx.fillText(label, node.x, node.y);
     });
   }, [graph]);
 
   if (loading) {
-    return <div className="card text-center text-gray-500">Loading citation graph...</div>;
+    return <div className="card text-center text-[var(--text-muted)]">Loading citation graph...</div>;
   }
 
   if (!graph || !graph.nodes || graph.nodes.length === 0) {
-    return <div className="card text-center text-gray-500">No citation graph available</div>;
+    return <div className="card text-center text-[var(--text-muted)]">No citation graph available</div>;
   }
 
   return (
     <div className="card">
-      <h3 className="font-bold text-lg mb-4">Citation Graph</h3>
-      <div className="bg-gray-50 rounded border">
+      <h3 className="section-header mb-4">Citation Graph</h3>
+      <div className="bg-[#0d1117] rounded border border-[var(--border)]">
         <canvas
           ref={canvasRef}
           width={600}
@@ -105,8 +115,8 @@ export default function CitationGraph({ paperId, token }) {
           className="w-full"
         />
       </div>
-      <p className="text-sm text-gray-600 mt-2">
-        <span className="inline-block w-4 h-4 bg-blue-500 rounded mr-2"></span>
+      <p className="text-sm text-[var(--text-secondary)] mt-2">
+        <span className="inline-block w-4 h-4 bg-[var(--accent)] rounded mr-2"></span>
         Paper
         <span className="inline-block w-4 h-4 bg-green-500 rounded mr-2 ml-4"></span>
         References

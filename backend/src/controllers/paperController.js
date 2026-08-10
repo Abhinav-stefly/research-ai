@@ -95,11 +95,20 @@ export const uploadPaper = async (req, res, next) => {
       // Continue even if citation extraction fails
     }
 
+    // Remove temporary upload after processing; Render filesystem is ephemeral.
+    if (uploadedFilePath && fs.existsSync(uploadedFilePath)) {
+      try {
+        fs.unlinkSync(uploadedFilePath);
+      } catch (cleanupError) {
+        console.warn("Could not delete temporary upload file:", cleanupError.message);
+      }
+    }
+
     // Save paper to database — FIX: summaries now persisted
     const paper = await Paper.create({
       user: req.user._id,
       title: req.file.originalname,
-      filePath: uploadedFilePath,
+      filePath: null,
       rawText,
       cleanedText,
       sections,

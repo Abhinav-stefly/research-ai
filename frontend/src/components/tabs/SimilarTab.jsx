@@ -20,12 +20,12 @@ export default function SimilarTab({ paperId, token }) {
     fetchSimilar();
   }, [paperId, token]);
 
-  if (loading) return <div className="card text-center">Finding similar papers...</div>;
+  if (loading) return <div className="card text-center text-[var(--text-secondary)]">Finding similar papers...</div>;
 
   return (
     <div className="space-y-4">
       {similar.length === 0 ? (
-        <div className="card text-center text-gray-500">
+        <div className="card text-center text-[var(--text-muted)]">
           No similar papers found
         </div>
       ) : (
@@ -34,15 +34,15 @@ export default function SimilarTab({ paperId, token }) {
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h3 className="font-bold text-lg mb-2">{i + 1}. {paper.title}</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-[var(--text-secondary)]">
                   Similarity Score: <span className="font-semibold">{(paper.similarity * 100).toFixed(1)}%</span>
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[var(--text-muted)] mt-1">
                   {new Date(paper.createdAt).toLocaleDateString()}
                 </p>
               </div>
-              <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center ml-4">
-                <span className="text-2xl font-bold text-blue-600">
+              <div className="w-16 h-16 bg-[rgba(59,130,246,0.2)] rounded-lg flex items-center justify-center ml-4">
+                <span className="text-2xl font-bold text-[var(--accent)]">
                   {(paper.similarity * 100).toFixed(0)}%
                 </span>
               </div>
